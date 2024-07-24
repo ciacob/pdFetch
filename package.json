@@ -1,0 +1,30 @@
+{
+  "name": "pdfetch",
+  "version": "1.0.0",
+  "description": "Node.js application to download KB articles from an arbitrary ServiceNow instance in PDF format.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciacob/pdFetch.git"
+  },
+  "keywords": [
+    "pdf",
+    "servicenow",
+    "dowload",
+    "bulk",
+    "storage",
+    "archive"
+  ],
+  "author": "Claudius Iacob <claudius.iacob@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ciacob/pdFetch/issues"
+  },
+  "homepage": "https://github.com/ciacob/pdFetch#readme",
+  "dependencies": {
+    "axios": "^1.7.2"
+  }
+}
