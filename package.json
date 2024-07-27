@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/ciacob/pdFetch#readme",
   "dependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.7.2",
+    "puppeteer": "^22.14.0"
   }
 }
