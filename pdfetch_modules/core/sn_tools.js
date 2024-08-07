@@ -28,7 +28,13 @@ const { removeFolderContents } = require("./fs_tools");
  *          Optional function to receive real-time monitoring information.
  *
  * @returns {Promise<Array<Object>>}
- *          Promise resolving to an array of objects, each containing the KB article details.
+ *          Promise resolving to an array of objects, each containing the KB
+ *          article details. Each Object in the returned Array has these keys:
+ *          `sys_id`, `number`, `version`, `short_description`, 
+ *          `kb_knowledge_base`, `sys_domain`, `sys_updated_on`, 
+ *          `sys_updated_on_msecs`.
+ *          The `version`, `kb_knowledge_base` and `sys_domain` are Objects
+ *          with extended information.
  */
 async function getArticlesList(
   instanceName,
@@ -245,8 +251,8 @@ async function fetchArticles(
 }
 
 /**
- * Function to determine changes in the list of ServiceNow KB articles between two points
- * in time.
+ * Function to determine changes in the list of ServiceNow KB articles between
+ * two points in time.
  *
  * @param   {String} currListFile
  *          Absolute path to the current list JSON file.
@@ -260,8 +266,8 @@ async function fetchArticles(
  * @param   {Function} [monitoringFn=null]
  *          Optional function to receive real-time monitoring information.
  * 
- * @returns {Object} The content written to the `targetChangesFile`, as an Object
- *          resembling to the following:
+ * @returns {Object} The content written to the `targetChangesFile`. This will
+ *          be an Object resembling to the following:
  *          {
  *              "last_updated_on": "2024/07/09 14:52:03",
  *              "changes":  {

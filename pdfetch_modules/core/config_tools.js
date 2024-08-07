@@ -272,10 +272,22 @@ function getConfigData(filePath, profileName, monitoringFn) {
   }
 }
 
+/**
+ * Merges three data sets, giving precedence to the later sets.
+ * @param {Object} implicit - The implicit data set.
+ * @param {Object} explicit - The explicit data set.
+ * @param {Object} given - The given data set.
+ * @return {Object} - The merged data set.
+ */
+function mergeData(implicit, explicit, given) {
+  return { ...implicit, ...explicit, ...given };
+}
+
 module.exports = {
   getUserHomeDirectory,
   isWindows,
   getArguments,
   getHelp,
   getConfigData,
+  mergeData
 };

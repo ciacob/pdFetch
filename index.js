@@ -4,18 +4,25 @@ const {
   getArticlesList,
   fetchArticles,
   getKBChanges,
-} = require("./pdfetch_modules/sn_tools");
+} = require("./pdfetch_modules/core/sn_tools");
 const {
   removeFolderContents,
   archiveArticles,
   mergeArticles,
   ensureSetup,
-} = require("./pdfetch_modules/fs_tools");
+} = require("./pdfetch_modules/core/fs_tools");
 const {
   getArguments,
   getHelp,
   getConfigData,
-} = require("./pdfetch_modules/config_tools");
+} = require("./pdfetch_modules/core/config_tools");
+const {
+  resetWorkspace,
+  doListingOnly,
+  doListingWithChanges,
+  doListingWithFiles,
+  doChangesWithFiles,
+} = require("./pdfetch_modules/business/operation");
 
 // TESTS:
 // GET a sample of all the Goodman articles as local PDF files.
@@ -146,7 +153,7 @@ const targetFolder = "c:\\Users\\claud\\_pdFetch_playground\\";
     ],
   };
   ensureSetup(targetFolder, bluePrint, monitoringFn);
-});//();
+}); //();
 
 (async function test8() {
   const configFilePath = path.join(targetFolder, "pdFetch.config");
@@ -157,4 +164,58 @@ const targetFolder = "c:\\Users\\claud\\_pdFetch_playground\\";
     monitoringFn
   );
   console.log("configData is: ", configData);
-})();
+}); //();
+
+(async function test9() {
+  resetWorkspace(targetFolder, monitoringFn);
+});//();
+
+(async function test10() {
+  doListingOnly(
+    targetFolder,
+    "file_list",
+    "gaiadev",
+    "table.api.user",
+    "5n735T%uG371",
+    "numberSTARTSWITHKB001181^sys_domain=292970ec978fe91041f8b38fe153af32",
+    monitoringFn
+  );
+});//();
+
+(async function test11() {
+  doListingWithChanges(
+    targetFolder,
+    "file_list",
+    "file_changes",
+    "gaiadev",
+    "table.api.user",
+    "5n735T%uG371",
+    "numberSTARTSWITHKB001181^sys_domain=292970ec978fe91041f8b38fe153af32",
+    monitoringFn
+  );
+});//();
+
+(async function test12() {
+  doListingWithFiles(
+    targetFolder,
+    "file_list",
+    "gaiadev",
+    "table.api.user",
+    "5n735T%uG371",
+    "numberSTARTSWITHKB001181^sys_domain=292970ec978fe91041f8b38fe153af32",
+    monitoringFn
+  );
+});//();
+
+(async function test13() {
+  doChangesWithFiles(
+    targetFolder,
+    "file_list",
+    "file_changes",
+    "gaiadev",
+    "table.api.user",
+    "5n735T%uG371",
+    "numberSTARTSWITHKB001181^ORnumber=KB0012760^sys_domain=292970ec978fe91041f8b38fe153af32^workflow_state=published",
+    monitoringFn
+  );
+});//();
