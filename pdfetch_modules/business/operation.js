@@ -103,7 +103,7 @@ async function doListingOnly(
     );
     $m({
       type: "info",
-      message: `Articles list has been successfully retrieved and stored at "${listFilePath}".`,
+      message: `Articles list has been stored at "${listFilePath}".`,
     });
     return articles;
   } catch (error) {
@@ -188,7 +188,7 @@ async function doListingWithChanges(
     if (!fs.existsSync(listFilePath)) {
       $m({
         type: "warn",
-        message: `Cannot determine changes: "${listFilePath}" not found.`,
+        message: `Cannot extract changes. File not found: "${listFilePath}". Try other "operation_mode" first.`,
       });
       return null;
     }
@@ -217,8 +217,8 @@ async function doListingWithChanges(
     );
 
     $m({
-      type: "info",
-      message: `Changes have been successfully determined and saved to ${changesFilePath}.`,
+      type: "debug",
+      message: `Changes extracted and saved to ${changesFilePath}.`,
       data: changes,
     });
 
@@ -226,7 +226,7 @@ async function doListingWithChanges(
   } catch (error) {
     $m({
       type: "error",
-      message: `Error during doListingWithChanges. Details: ${error.message}`,
+      message: `Error extracting changes. Details: ${error.message}`,
       data: { error },
     });
     return null;
@@ -295,7 +295,7 @@ async function doListingWithFiles(
     const pdfHome = path.join(folderPath, "PDFs");
     if (!fs.existsSync(pdfHome)) {
       fs.mkdirSync(pdfHome, { recursive: true });
-      $m({ type: "info", message: `PDFs directory created at ${pdfHome}.` });
+      $m({ type: "debug", message: `PDFs directory created at ${pdfHome}.` });
     }
 
     // Step 3: Fetch articles as PDFs
@@ -312,7 +312,7 @@ async function doListingWithFiles(
 
     $m({
       type: "info",
-      message: `Articles have been successfully fetched and saved as PDFs in ${pdfHome}.`,
+      message: `Articles have been fetched and saved as PDFs in "${pdfHome}".`,
     });
   } catch (error) {
     $m({
@@ -401,7 +401,7 @@ async function doChangesWithFiles(
     if (!fs.existsSync(listFilePath)) {
       $m({
         type: "warn",
-        message: `Cannot determine changes: "${listFilePath}" not found. Will download articles then exit.`,
+        message: `Cannot extract changes. File not found: "${listFilePath}". Will download articles then exit.`,
       });
       await doListingWithFiles(
         folderPath,
@@ -465,14 +465,14 @@ async function doChangesWithFiles(
 
       $m({
         type: "info",
-        message: `Changes have been successfully applied and articles fetched as necessary.`,
+        message: `Changes applied and articles updated as needed.`,
         data: changesReport,
       });
     }
   } catch (error) {
     $m({
       type: "error",
-      message: `Error during doChangesWithFiles. Details: ${error.message}`,
+      message: `Error applying changes and updating articles. Details: ${error.message}`,
       data: { error },
     });
   }

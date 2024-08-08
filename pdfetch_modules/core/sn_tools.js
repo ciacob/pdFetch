@@ -70,7 +70,7 @@ async function getArticlesList(
   try {
     const response = await axios.get(url, { auth, params });
     $m({
-      type: "info",
+      type: "debug",
       message: `Got response from "${instanceName}.service-now".`,
     });
 
@@ -99,7 +99,7 @@ async function getArticlesList(
     try {
       await fs.writeFile(targetFile, JSON.stringify(articles, null, "\t"));
       $m({
-        type: "info",
+        type: "debug",
         message: `Successfully wrote file "${targetFile}".`,
       });
     } catch (err) {
@@ -166,7 +166,7 @@ async function fetchArticles(
 ) {
   const $m = monitoringFn || function () {};
 
-  $m({ type: "info", message: "Opening headless browser..." });
+  $m({ type: "debug", message: "Opening headless browser..." });
   const browser = await puppeteer.launch({ headless: "shell" });
   const page = await browser.newPage();
 
@@ -187,7 +187,7 @@ async function fetchArticles(
     try {
       $m({
         type: "info",
-        message: `Downloading KB article ${articleNumber}...`,
+        message: `Downloading KB article "${articleNumber}"...`,
       });
       await page.goto(
         `https://${instanceName}.service-now.com/kb_view.do?sysparm_article=${articleNumber}&sysparm_media=print`,
@@ -207,7 +207,7 @@ async function fetchArticles(
       });
       if (numDetailsTags) {
         $m({
-          type: "info",
+          type: "debug",
           message: `Found and expanded ${numDetailsTags} "<details>" HTML tag(s) for print.`,
         });
       }
@@ -231,8 +231,8 @@ async function fetchArticles(
 
       await page.pdf({ path: pdfPath, format: "A4", printBackground: true });
       $m({
-        type: "info",
-        message: `Done. Successfully downloaded ${articleNumber}.`,
+        type: "debug",
+        message: `Done. Successfully downloaded "${articleNumber}".`,
       });
     } catch (error) {
       $m({

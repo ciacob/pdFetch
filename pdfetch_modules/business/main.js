@@ -5,6 +5,7 @@ const {
   getConfigData,
   mergeData,
   getHelp,
+  getUserHomeDirectory,
 } = require("../core/config_tools");
 const {
   ensureSetup,
@@ -44,10 +45,25 @@ async function mainExec(input, monitoringFn = null) {
 
   // Parse command-line arguments
   const args = getArguments(appArgs, appArgDefaults, $m);
+  if (!args) {
+    $m({
+      type: "error",
+      message: `Failed reading program arguments. Run "${configDefaults.appName} --h" for documentation.`,
+    });
+    return 2; // Error exit
+  }
 
   // Handle --help argument
   if (args.help) {
-    $m({ type: "info", message: getHelp(appArgs, $m) });
+    $m({
+      type: "info",
+      message: `\n${configDefaults.appName} ${configDefaults.appVersion} by ${
+        configDefaults.appAuthor
+      }\n${configDefaults.appDescription}\n\nPROGRAM ARGUMENTS:\n\n${getHelp(
+        appArgs,
+        $m
+      )}`,
+    });
     return 1; // Early exit for help
   }
 
@@ -60,7 +76,7 @@ async function mainExec(input, monitoringFn = null) {
         content: [
           {
             type: "file",
-            path: configFilePath,
+            path: "pdFetch.config",
             template: configFileTemplate,
             data: configDefaults,
           },
@@ -135,7 +151,7 @@ async function mainExec(input, monitoringFn = null) {
         content: [
           {
             type: "folder",
-            path: path.join(finalInputData.output_dir, "PDFs"),
+            path: "PDFs",
           },
         ],
       },

@@ -117,7 +117,7 @@ const appArgs = [
   },
   {
     name: "Configuration Profile Selection",
-    payload: /^--(config_profile|cp)$/,
+    payload: /^--(config_profile|cp)=(.+)$/,
     doc: "Loads default data from a configuration profile, assuming it has been defined (and assuming a configuration file exists). See the information about the `Configuration File Initialization` parameter for more details.",
     mandatory: false,
   },

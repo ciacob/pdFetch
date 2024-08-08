@@ -20,42 +20,44 @@ function isWindows() {
 
 /**
  * Retrieves and parses arguments, if any.
- * @param {Array} dictionary
- *        Array of objects describing the arguments that are expected. Each object contains:
- *        - name: A print-friendly string (not used for parsing).
- *        - payload: A RegExp or string describing the argument pattern.
- *        - doc: Arbitrary documentation as a string.
- *        Examples:
- *          { name: 'Dry Run', payload: '--isDryRun', doc: 'A simple flag argument' }
- *          { name: 'Version', payload: /^--(version|v)/, doc: 'Prints app version' }
- *          { name: 'Home Directory', payload: /^--(homeDir)=(.+)/, doc: 'Sets app home' }
- *          {
+ * @param   {Array} dictionary
+ *          Array of objects describing the arguments that are expected. Each object contains:
+ *          - name: A print-friendly string (not used for parsing).
+ *          - payload: A RegExp or string describing the argument pattern.
+ *          - doc: Arbitrary documentation as a string.
+ *          Examples:
+ *            { name: 'Dry Run', payload: '--isDryRun', doc: 'A simple flag argument' }
+ *            { name: 'Version', payload: /^--(version|v)/, doc: 'Prints app version' }
+ *            { name: 'Home Directory', payload: /^--(homeDir)=(.+)/, doc: 'Sets app home' }
+ *            {
  *              name: 'Parse Model',
  *              payload: /^--(parseModel)=(saasFile|raw)/,
  *              doc: 'Sets the parsing model to use; one of "saasFile" or "raw".'
- *          }
- *        IMPORTANT:
- *        (1) When using RegExp as payload, there must be at least one, and no more than two
- *            groups in the pattern; the first group must capture the argument name, and the
- *            second, if available, must capture the argument value.
- *        (2) If there is only one group, the value of the argument will be `true` (i.e., we
- *            will consider the argument to be a flag).
- *        (3) If a RegExp payload was used to specify both long and abridged names for an
- *            argument, e.g., /^--(version|v)/, only the long form of the argument will be
- *            used to represent the argument within the returned Object, regardless of the
- *            form used when executing the program.
+ *            }
+ *          IMPORTANT:
+ *          (1) When using RegExp as payload, there must be at least one, and no more than two
+ *              groups in the pattern; the first group must capture the argument name, and the
+ *              second, if available, must capture the argument value.
+ *          (2) If there is only one group, the value of the argument will be `true` (i.e., we
+ *              will consider the argument to be a flag).
+ *          (3) If a RegExp payload was used to specify both long and abridged names for an
+ *              argument, e.g., /^--(version|v)/, only the long form of the argument will be
+ *              used to represent the argument within the returned Object, regardless of the
+ *              form used when executing the program.
  *
- * @param {Object} defaults
- *        Optional. Object containing key-value pairs to populate the arguments repository
- *        with. These will function as defaults, in case no value will be found to overwrite
- *        them.
+ * @param   {Object} defaults
+ *          Optional. Object containing key-value pairs to populate the arguments repository
+ *          with. These will function as defaults, in case no value will be found to overwrite
+ *          them.
  *
- * @param {Function} [monitoringFn=null]
- *        Optional function to receive real-time monitoring information.
- *        Expected signature/arguments structure is: onMonitoringInfo
- *        ({type:"info|warn|error", message:"<any>"[, data : {}]});
+ * @param   {Function} [monitoringFn=null]
+ *          Optional function to receive real-time monitoring information.
+ *          Expected signature/arguments structure is: onMonitoringInfo
+ *          ({type:"info|warn|error", message:"<any>"[, data : {}]});
  *
- * @return {Object} Key-value pairs of provided or default arguments.
+ * @return  {Object} Key-value pairs of provided or default arguments.
+ *          Returns `null` for an unmatched argument, in which case the client code should
+ *          stop execution.
  */
 function getArguments(dictionary, defaults = {}, monitoringFn = null) {
   const $m = monitoringFn || function () {};
@@ -88,8 +90,8 @@ function getArguments(dictionary, defaults = {}, monitoringFn = null) {
         }
       }
       if (!matched) {
-        $m({ type: "warn", message: `Unknown argument: ${arg}` });
-        continue;
+        $m({ type: "error", message: `Unknown argument: ${arg}` });
+        return null;
       }
     }
   }
@@ -208,7 +210,7 @@ function getConfigData(filePath, profileName, monitoringFn) {
     const profile = configData.profiles.find((p) => p.name === profileName);
     if (!profile) {
       $m({
-        type: "warn",
+        type: profileName == "default" ? "debug" : "warn",
         message: `Profile "${profileName}" not found in configuration file: ${filePath}`,
       });
       return null;
@@ -233,7 +235,7 @@ function getConfigData(filePath, profileName, monitoringFn) {
     for (const [key, value] of Object.entries(settings)) {
       if (typeof value === "string" && value.trim() === "") {
         $m({
-          type: "info",
+          type: "debug",
           message: `Ignoring empty "${key}" of the "${profileName}" profile`,
         });
         result[key] = null;
@@ -263,10 +265,11 @@ function getConfigData(filePath, profileName, monitoringFn) {
     }
     return result;
   } catch (error) {
+    const isFileMissing = error.code == "ENOENT";
     $m({
-      type: "error",
+      type: isFileMissing ? "warn" : "error",
       message: `Error reading configuration file. Details: ${error.message}`,
-      data: { error },
+      data: isFileMissing ? null : { error },
     });
     return null;
   }
@@ -289,5 +292,5 @@ module.exports = {
   getArguments,
   getHelp,
   getConfigData,
-  mergeData
+  mergeData,
 };

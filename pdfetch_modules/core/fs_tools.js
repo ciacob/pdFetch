@@ -62,13 +62,13 @@ async function removeFolderContents(
       }
 
       $m({
-        type: "info",
+        type: "debug",
         message: `Deleted: "${filePath}"`,
       });
     }
 
     $m({
-      type: "info",
+      type: "debug",
       message: `Done clearing (matching) content of folder "${folderPath}".`,
     });
   } catch (error) {
@@ -117,7 +117,7 @@ async function archiveArticles(
     output.on("close", () => {
       $m({
         type: "info",
-        message: `Archive ${outputPath} has been finalized. Total bytes: ${archive.pointer()}`,
+        message: `Archive "${outputPath}" has been finalized. Total bytes: ${archive.pointer()}`,
       });
       resolve();
     });
@@ -142,7 +142,10 @@ async function archiveArticles(
     articleNumbers.forEach((articleNumber) => {
       const filePath = path.join(pdfDir, `${articleNumber}.pdf`);
       archive.file(filePath, { name: `${articleNumber}.pdf` });
-      $m({ type: "info", message: `Adding ${filePath} to archive` });
+      $m({
+        type: "info",
+        message: `Adding file "${articleNumber}.pdf" to archive...`,
+      });
     });
 
     archive.finalize();
@@ -184,25 +187,41 @@ async function mergeArticles(
     const pdfDir = path.join(workDir, "PDFs");
     const outputPath = path.join(workDir, `${mergedFileName}.pdf`);
 
+    let addedFiles = 0;
     for (const articleNumber of articleNumbers) {
       const filePath = path.join(pdfDir, `${articleNumber}.pdf`);
       if (!fs.existsSync(filePath)) {
         $m({ type: "warn", message: `Skipped missing file: ${filePath}.` });
         continue;
       }
+
+      $m({
+        type: "info",
+        message: `Adding file "${articleNumber}.pdf" to merged PDF...`,
+      });
+
       const pdfBytes = await fs.promises.readFile(filePath);
       const pdf = await PDFDocument.load(pdfBytes);
 
       const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
       copiedPages.forEach((page) => mergedPdf.addPage(page));
-
-      $m({ type: "info", message: `Added ${filePath} to merged PDF` });
+      addedFiles++;
     }
 
-    const mergedPdfBytes = await mergedPdf.save();
-    await fs.promises.writeFile(outputPath, mergedPdfBytes);
+    if (addedFiles > 0) {
+      const mergedPdfBytes = await mergedPdf.save();
+      await fs.promises.writeFile(outputPath, mergedPdfBytes);
 
-    $m({ type: "info", message: `Merged PDF created at ${outputPath}` });
+      $m({
+        type: "info",
+        message: `Merged ${addedFiles} PDF(s) to file "${outputPath}"`,
+      });
+    } else {
+      $m({
+        type: "warn",
+        message: `Found no actual PDFs to merge. Check your "operation_mode".`,
+      });
+    }
   } catch (error) {
     $m({
       type: "error",
@@ -299,4 +318,9 @@ function populateTemplate(template, data) {
   });
 }
 
-module.exports = { removeFolderContents, archiveArticles, mergeArticles, ensureSetup };
+module.exports = {
+  removeFolderContents,
+  archiveArticles,
+  mergeArticles,
+  ensureSetup,
+};
