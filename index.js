@@ -25,10 +25,15 @@ const monitoringFn = (info) => {
 
   const { type = "", message = "", data = "" } = info;
   const normalizedType = ("" + type).trim().toLowerCase();
+
+  // Debug messages only makes sense to be turned on while developing the app.
+  const isDebug = normalizedType === "debug";
+  if (isDebug) {
+    return;
+  }
+
   const isError = normalizedType === "error";
-
   console.log(`[${normalizedType.toUpperCase()}] ${message}`, data || "");
-
   return isError;
 };
 
@@ -151,4 +156,11 @@ mainExec(
     appArgs,
   },
   monitoringFn
-);
+)
+  .then((exitVal) => {
+    process.exit(exitVal);
+  })
+  .catch((err) => {
+    console.error(`[ERROR] An unexpected error occurred: ${err.message}`);
+    process.exit(2);
+  });
