@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Node.js application to download KB articles from an arbitrary ServiceNow instance in PDF format.",
   "main": "index.js",
+  "bin": {
+    "pdfetch": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +16,7 @@
   "keywords": [
     "pdf",
     "servicenow",
-    "dowload",
+    "download",
     "bulk",
     "storage",
     "archive"
