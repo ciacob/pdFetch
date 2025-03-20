@@ -59,14 +59,14 @@ const configFileTemplate = `{
 	},
 	"profiles":[
 		{
-			"name":"profile_1",
+			"name":"default",
 			"description":"Sample profile to get you started. Replace this with something meaningful.",
 			"settings":{
-				"sn_instance_name":"acme",
+				"sn_instance_name":"acme-example",
 				"sn_user_name":"john.doe",
 				"sn_pass":"letmein1234",
-				"sn_query":"",
-				"output_dir":"/path/to/my/acme/folder",
+				"sn_query":"number=KB0001234",
+				"output_dir":"~/exported-sn-articles",
 				"storage_mode":"",
 				"operation_mode":""
 			}
