@@ -281,9 +281,10 @@ function getConfigData(filePath, profileName, monitoringFn) {
  * @param {Object} explicit - The explicit data set.
  * @param {Object} given - The given data set.
  * @return {Object} - The merged data set.
+ * @return {Object} - The extra data set.
  */
-function mergeData(implicit, explicit, given) {
-  return { ...implicit, ...explicit, ...given };
+function mergeData(implicit, explicit, given, extra) {
+  return { ...implicit, ...explicit, ...given, ...extra };
 }
 
 module.exports = {
