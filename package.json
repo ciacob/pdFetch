@@ -1,6 +1,6 @@
 {
   "name": "pdfetch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js application to download KB articles from an arbitrary ServiceNow instance in PDF format.",
   "main": "index.js",
   "bin": {
