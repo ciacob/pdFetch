@@ -1,9 +1,8 @@
-# Claudius Iacob
-
-## pdFetch 1.0.0 Documentation
-
+# pdFetch
 ### **pdFetch** is a Node.js application designed to export Knowledge Base (KB) articles from a ServiceNow instance into PDF files.
-It provides various modes of operation to handle different use cases, including listing articles, identifying changes, downloading listed articles as PDFs and keeping them up to date. It also provides special storage modes such as archiving or merging the individual PDF files.
+It provides various modes of operation to handle different use cases, including **listing articles**, **identifying changes**, **downloading listed articles as PDFs** and **keeping them up to date**. It also provides special storage modes such as **archiving** or **merging** the individual PDF files.
+
+> Note: ⚠️ Please be aware that generating the first PDF **may take up to 2–3 minutes**. Subsequent PDFs typically download within a few seconds each.
 
 ### Scenarios
 
